@@ -6,8 +6,10 @@ accessible UI. Below is a breakdown of how each principle is applied.
 ## Design Tokens
 
 All colours, spacing, typography, radii, shadows, and animation values are
-defined as CSS custom properties in `:root` — no hardcoded values anywhere in
-the component CSS.
+defined as CSS custom properties in `:root`. The vast majority of the stylesheet
+references these tokens — a small number of hardcoded values remain where CSS
+custom properties cannot express the value (e.g. alpha-channel tinted backgrounds,
+decorative border widths on the pointer triangle).
 
 **Semantic naming over raw values:**
 
@@ -20,10 +22,17 @@ the component CSS.
 ```
 
 ```css
-/* Bad — this pattern never appears in the codebase */
+/* Avoid — raw hex appears only in the palette layer */
 color: #486791;
 background: #e0e8ed;
 ```
+
+A few properties use hardcoded `rgba()` values where a token-derived colour
+needs an alpha channel — for example the tinted backgrounds on the problem and
+solution blocks (`rgba(249, 89, 80, 0.06)`, `rgba(42, 154, 111, 0.06)`) and the
+pointer drop-shadow. These are the raw RGB equivalents of `--color-red` and
+`--color-green` with opacity applied, which CSS custom properties cannot express
+without `color-mix()` or relative colour syntax.
 
 The palette layer (`--color-navy`, `--color-red`, `--color-slate`, etc.) is
 separated from the semantic layer (`--color-link`, `--color-pill-bg`,
@@ -67,6 +76,12 @@ Three font families are tokenised: `--font-body` (Public Sans),
 
 ## Colour Usage
 
+Colours are split into a palette layer (raw hex values) and a semantic layer
+(meaning-based aliases). Components primarily reference the semantic layer,
+though a few use palette tokens directly where no semantic alias exists (e.g.
+`--color-navy` for code block backgrounds, `--color-light` for the active tab
+border).
+
 | Purpose | Token | Value |
 |---------|-------|-------|
 | Headings, quote text | `--color-navy` | `#0b182a` |
@@ -80,15 +95,17 @@ Three font families are tokenised: `--font-body` (Public Sans),
 
 ## Component Checklist
 
-- [x] **Uses design tokens, not hardcoded values** — every colour, spacing,
-      font size, radius, shadow, and animation duration references a `--` token
+- [x] **Uses design tokens, not hardcoded values** — the vast majority of
+      colours, spacing, font sizes, radii, shadows, and animation durations
+      reference a `--` token; a small number of hardcoded `rgba()` values remain
+      where alpha channels are needed
 - [x] **Supports reduced motion** — `@media (prefers-reduced-motion: reduce)`
       disables all animations and transitions
 - [x] **Has consistent spacing with siblings** — all components use the same
       `--space-*` scale
 - [x] **Typography matches the established scale** — all text uses
       `--font-size-*` tokens
-- [x] **Interactive states (hover, focus, active, disabled)** — tabs have
+- [x] **Interactive states (hover, focus, active, selected)** — tabs have
       `:hover`, `:active`, `[aria-selected]`, and `:focus-visible` states;
       focus ring uses `--color-focus` with 3px outline
 - [x] **Follows existing naming conventions** — BEM-style class names
@@ -113,4 +130,5 @@ The slider uses a composition approach rather than a monolithic component:
 ```
 
 Each layer has a single responsibility — the card handles layout, the viewport
-handles overflow, the panels handle content, and the tabs handle navigation.
+uses `min-width: 0` to prevent flex blowout, the panels handle content, and the
+tabs handle navigation.

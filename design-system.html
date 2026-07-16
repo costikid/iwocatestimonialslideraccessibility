@@ -1,0 +1,327 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- Primary SEO -->
+<title>Design System Principles | iwoca Testimonial Slider Accessibility Fix</title>
+<meta name="description" content="How the iwoca testimonial slider accessibility fix follows design system principles: design tokens, spacing scale, typography scale, colour usage, component checklist, and composition pattern.">
+<meta name="keywords" content="design system, design tokens, CSS custom properties, BEM, spacing scale, typography scale, semantic naming, iwoca, accessibility, front-end engineer">
+<meta name="author" content="Costanza C">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://costikid.github.io/iwocatestimonialslideraccessibility/design-system.html">
+
+<!-- Open Graph -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="Design System Principles | iwoca Testimonial Slider Accessibility Fix">
+<meta property="og:description" content="How the iwoca testimonial slider follows design system principles — design tokens, spacing scale, typography scale, colour usage, and composition pattern.">
+<meta property="og:url" content="https://costikid.github.io/iwocatestimonialslideraccessibility/design-system.html">
+<meta property="og:site_name" content="Costanza C — Front-End Engineer">
+
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Design System Principles | iwoca Testimonial Slider">
+<meta name="twitter:description" content="How the iwoca testimonial slider follows design system principles — tokens, spacing, typography, colour, and composition.">
+
+<!-- Fonts & styles -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<header>
+  <nav class="portfolio-nav">
+    <div class="portfolio-nav__inner">
+      <a href="index.html" class="portfolio-nav__brand">Costanza</a>
+      <ul class="portfolio-nav__links">
+        <li><a href="index.html#case-study">Case Study</a></li>
+        <li><a href="index.html#live-demo">Live Demo</a></li>
+        <li><a href="design-system.html">Design System</a></li>
+      </ul>
+    </div>
+  </nav>
+</header>
+
+<main class="page" id="top">
+
+  <section class="hero">
+    <div class="hero__inner">
+      <h1 class="hero__title">Design System<br><span>Principles &amp; Compliance</span></h1>
+      <p class="hero__subtitle">How the iwoca testimonial slider accessibility fix follows established design system principles to ensure consistent, accessible, and maintainable UI.</p>
+    </div>
+  </section>
+
+  <section class="case-study">
+
+    <!-- Design Tokens -->
+    <div class="case-study__block case-study__block--solution">
+      <h2 class="case-study__heading">
+        <span class="case-study__icon" aria-hidden="true">&#9670;</span>
+        Design Tokens
+      </h2>
+      <p>All colours, spacing, typography, radii, shadows, and animation values are defined as CSS custom properties in <code>:root</code>. The vast majority of the stylesheet references these tokens — a small number of hardcoded values remain where CSS custom properties cannot express the value (e.g. alpha-channel tinted backgrounds, decorative border widths on the pointer triangle).</p>
+
+      <p><strong>Semantic naming over raw values:</strong></p>
+
+      <details class="code-details" open>
+        <summary class="code-label">Good — semantic tokens referencing the palette</summary>
+<pre class="code-block"><code><span class="tok-comment">/* Semantic layer — references palette tokens, never raw hex */</span>
+<span class="tok-attr">--color-link</span>:          <span class="tok-fn">var</span>(<span class="tok-attr">--color-brown</span>);
+<span class="tok-attr">--color-pill-bg</span>:       <span class="tok-fn">var</span>(<span class="tok-attr">--color-light</span>);
+<span class="tok-attr">--color-pill-bg-hover</span>: <span class="tok-fn">var</span>(<span class="tok-attr">--color-slate</span>);
+<span class="tok-attr">--color-focus</span>:         <span class="tok-fn">var</span>(<span class="tok-attr">--color-green</span>);</code></pre>
+      </details>
+
+      <details class="code-details">
+        <summary class="code-label">Avoid — hardcoded values (raw hex appears only in the palette layer)</summary>
+<pre class="code-block"><code><span class="tok-comment">/* Components should never do this — use a semantic token instead */</span>
+<span class="tok-attr">color</span>: <span class="tok-str">#486791</span>;
+<span class="tok-attr">background</span>: <span class="tok-str">#e0e8ed</span>;</code></pre>
+      </details>
+
+      <p>A few properties use hardcoded <code>rgba()</code> values where a token-derived colour needs an alpha channel — for example the tinted backgrounds on the problem and solution blocks (<code>rgba(249, 89, 80, 0.06)</code>, <code>rgba(42, 154, 111, 0.06)</code>) and the pointer drop-shadow. These are the raw RGB equivalents of <code>--color-red</code> and <code>--color-green</code> with opacity applied, which CSS custom properties cannot express without <code>color-mix()</code> or relative colour syntax.</p>
+
+      <p>The palette layer (<code>--color-navy</code>, <code>--color-red</code>, <code>--color-slate</code>, etc.) is separated from the semantic layer (<code>--color-link</code>, <code>--color-pill-bg</code>, <code>--color-focus</code>), so a theme change only requires updating the palette tokens — every component that references the semantic layer updates automatically.</p>
+    </div>
+
+    <!-- Spacing Scale -->
+    <div class="case-study__block case-study__block--solution">
+      <h2 class="case-study__heading">
+        <span class="case-study__icon" aria-hidden="true">&#8801;</span>
+        Spacing Scale
+      </h2>
+      <p>A 2px base scale is used consistently throughout, defined as <code>--space-*</code> tokens. Every <code>margin</code>, <code>padding</code>, and <code>gap</code> in the stylesheet references one of these tokens — no magic numbers.</p>
+
+      <div class="ds-table-wrap">
+        <table class="ds-table">
+          <thead>
+            <tr>
+              <th scope="col">Token</th>
+              <th scope="col">Value</th>
+              <th scope="col">Example usage</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td><code>--space-2</code></td><td>4px</td><td>Small gaps, list item spacing</td></tr>
+            <tr><td><code>--space-4</code></td><td>8px</td><td>Code block padding, bullet margins</td></tr>
+            <tr><td><code>--space-8</code></td><td>16px</td><td>Card padding, section gaps</td></tr>
+            <tr><td><code>--space-12</code></td><td>24px</td><td>Code block padding, grid gaps</td></tr>
+            <tr><td><code>--space-20</code></td><td>40px</td><td>Hero padding, section margins</td></tr>
+            <tr><td><code>--space-24</code></td><td>48px</td><td>Page padding, large section gaps</td></tr>
+            <tr><td><code>--space-40</code></td><td>80px</td><td>Hero top padding</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Typography Scale -->
+    <div class="case-study__block case-study__block--solution">
+      <h2 class="case-study__heading">
+        <span class="case-study__icon" aria-hidden="true">&#65;&#184;</span>
+        Typography Scale
+      </h2>
+      <p>A 13-step type scale is defined as <code>--font-size-*</code> tokens, from <code>xs</code> (13px) to <code>8xl</code> (48px). Three font families are tokenised: <code>--font-body</code> (Public Sans), <code>--font-serif</code> (Georgia), and <code>--font-mono</code> (SF Mono).</p>
+
+      <div class="ds-table-wrap">
+        <table class="ds-table">
+          <thead>
+            <tr>
+              <th scope="col">Token</th>
+              <th scope="col">Value</th>
+              <th scope="col">Usage</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td><code>--font-size-xs</code></td><td>13px</td><td>Code block text, footer</td></tr>
+            <tr><td><code>--font-size-sm</code></td><td>14px</td><td>Nav links, code labels</td></tr>
+            <tr><td><code>--font-size-base</code></td><td>15px</td><td>Body text, tab labels</td></tr>
+            <tr><td><code>--font-size-md</code></td><td>16px</td><td>Case study body, captions</td></tr>
+            <tr><td><code>--font-size-xl</code></td><td>18px</td><td>Section intros, card headings</td></tr>
+            <tr><td><code>--font-size-2xl</code></td><td>20px</td><td>Quote text, nav brand</td></tr>
+            <tr><td><code>--font-size-6xl</code></td><td>32px</td><td>Section titles</td></tr>
+            <tr><td><code>--font-size-8xl</code></td><td>48px</td><td>Hero title</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Colour Usage -->
+    <div class="case-study__block case-study__block--solution">
+      <h2 class="case-study__heading">
+        <span class="case-study__icon" aria-hidden="true">&#9632;</span>
+        Colour Usage
+      </h2>
+      <p>Colours are split into a palette layer (raw hex values) and a semantic layer (meaning-based aliases). Components primarily reference the semantic layer, though a few use palette tokens directly where no semantic alias exists (e.g. <code>--color-navy</code> for code block backgrounds, <code>--color-light</code> for the active tab border).</p>
+
+      <div class="ds-table-wrap">
+        <table class="ds-table">
+          <thead>
+            <tr>
+              <th scope="col">Purpose</th>
+              <th scope="col">Token</th>
+              <th scope="col">Value</th>
+              <th scope="col">Swatch</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>Headings, quote text</td><td><code>--color-navy</code></td><td><code>#0b182a</code></td><td><span class="swatch" style="background:#0b182a"></span></td></tr>
+            <tr><td>Body text, author name</td><td><code>--color-slate</code></td><td><code>#486791</code></td><td><span class="swatch" style="background:#486791"></span></td></tr>
+            <tr><td>Accent (quote mark, icons)</td><td><code>--color-red</code></td><td><code>#f95950</code></td><td><span class="swatch" style="background:#f95950"></span></td></tr>
+            <tr><td>Focus ring</td><td><code>--color-focus</code></td><td><code>#2a9a6f</code></td><td><span class="swatch" style="background:#2a9a6f"></span></td></tr>
+            <tr><td>Pill background</td><td><code>--color-pill-bg</code></td><td><code>#e0e8ed</code></td><td><span class="swatch" style="background:#e0e8ed"></span></td></tr>
+            <tr><td>Pill hover</td><td><code>--color-pill-bg-hover</code></td><td><code>#486791</code></td><td><span class="swatch" style="background:#486791"></span></td></tr>
+            <tr><td>Links</td><td><code>--color-link</code></td><td><code>#8a5f4d</code></td><td><span class="swatch" style="background:#8a5f4d"></span></td></tr>
+            <tr><td>Card surface</td><td><code>--color-white</code></td><td><code>#FFFFFF</code></td><td><span class="swatch" style="background:#FFFFFF;border:1px solid #e0e8ed"></span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Component Checklist -->
+    <div class="case-study__block case-study__block--solution">
+      <h2 class="case-study__heading">
+        <span class="case-study__icon" aria-hidden="true">&#10003;</span>
+        Component Checklist
+      </h2>
+      <p>Before completing a component, verify:</p>
+
+      <ul class="ds-checklist">
+        <li>
+          <span class="ds-check" aria-hidden="true">&#10003;</span>
+          <div class="ds-checklist__content">
+            <strong>Uses design tokens, not hardcoded values</strong>
+            <span class="ds-checklist__desc">Every colour, spacing, font size, radius, shadow, and animation duration references a <code>--</code> token.</span>
+          </div>
+        </li>
+        <li>
+          <span class="ds-check" aria-hidden="true">&#10003;</span>
+          <div class="ds-checklist__content">
+            <strong>Supports reduced motion</strong>
+            <span class="ds-checklist__desc"><code>@media (prefers-reduced-motion: reduce)</code> disables all animations and transitions.</span>
+          </div>
+        </li>
+        <li>
+          <span class="ds-check" aria-hidden="true">&#10003;</span>
+          <div class="ds-checklist__content">
+            <strong>Has consistent spacing with siblings</strong>
+            <span class="ds-checklist__desc">All components use the same <code>--space-*</code> scale.</span>
+          </div>
+        </li>
+        <li>
+          <span class="ds-check" aria-hidden="true">&#10003;</span>
+          <div class="ds-checklist__content">
+            <strong>Typography matches the established scale</strong>
+            <span class="ds-checklist__desc">All text uses <code>--font-size-*</code> tokens.</span>
+          </div>
+        </li>
+        <li>
+          <span class="ds-check" aria-hidden="true">&#10003;</span>
+          <div class="ds-checklist__content">
+            <strong>Interactive states (hover, focus, active, selected)</strong>
+            <span class="ds-checklist__desc">Tabs have <code>:hover</code>, <code>:active</code>, <code>[aria-selected]</code>, and <code>:focus-visible</code> states; focus ring uses <code>--color-focus</code> with 3px outline.</span>
+          </div>
+        </li>
+        <li>
+          <span class="ds-check" aria-hidden="true">&#10003;</span>
+          <div class="ds-checklist__content">
+            <strong>Follows existing naming conventions</strong>
+            <span class="ds-checklist__desc">BEM-style class names (<code>.topic-tab</code>, <code>.topic-tab__icon</code>, <code>.topic-tab--active</code>).</span>
+          </div>
+        </li>
+      </ul>
+    </div>
+
+    <!-- Composition Pattern -->
+    <div class="case-study__block case-study__block--solution">
+      <h2 class="case-study__heading">
+        <span class="case-study__icon" aria-hidden="true">&#9881;</span>
+        Composition Pattern
+      </h2>
+      <p>The slider uses a composition approach rather than a monolithic component. Each layer has a single responsibility — the card handles layout, the viewport handles overflow, the panels handle content, and the tabs handle navigation.</p>
+
+      <details class="code-details" open>
+        <summary class="code-label">HTML structure — layered composition</summary>
+<pre class="code-block"><code><span class="tok-tag">&lt;div</span> <span class="tok-attr">class</span>=<span class="tok-str">"testimonial-slider"</span><span class="tok-tag">&gt;</span>
+  <span class="tok-tag">&lt;div</span> <span class="tok-attr">class</span>=<span class="tok-str">"slider-card"</span><span class="tok-tag">&gt;</span>
+    <span class="tok-tag">&lt;div</span> <span class="tok-attr">class</span>=<span class="tok-str">"slider-viewport"</span><span class="tok-tag">&gt;</span>
+      <span class="tok-tag">&lt;article</span> <span class="tok-attr">class</span>=<span class="tok-str">"slide-panel"</span><span class="tok-tag">&gt;</span>…<span class="tok-tag">&lt;/article&gt;</span>
+    <span class="tok-tag">&lt;/div&gt;</span>
+    <span class="tok-tag">&lt;span</span> <span class="tok-attr">class</span>=<span class="tok-str">"slider-pointer"</span><span class="tok-tag">&gt;&lt;/span&gt;</span>
+  <span class="tok-tag">&lt;/div&gt;</span>
+  <span class="tok-tag">&lt;div</span> <span class="tok-attr">class</span>=<span class="tok-str">"topic-tabs"</span> <span class="tok-attr">role</span>=<span class="tok-str">"tablist"</span><span class="tok-tag">&gt;</span>
+    <span class="tok-tag">&lt;button</span> <span class="tok-attr">class</span>=<span class="tok-str">"topic-tab"</span><span class="tok-tag">&gt;</span>…<span class="tok-tag">&lt;/button&gt;</span>
+  <span class="tok-tag">&lt;/div&gt;</span>
+<span class="tok-tag">&lt;/div&gt;</span></code></pre>
+      </details>
+
+      <div class="ds-table-wrap">
+        <table class="ds-table">
+          <thead>
+            <tr>
+              <th scope="col">Layer</th>
+              <th scope="col">Class</th>
+              <th scope="col">Responsibility</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>Container</td><td><code>.testimonial-slider</code></td><td>Positions pointer, scopes focus styles</td></tr>
+            <tr><td>Card</td><td><code>.slider-card</code></td><td>Layout, shadow, border radius, drag surface</td></tr>
+            <tr><td>Viewport</td><td><code>.slider-viewport</code></td><td>Flex container for panels, <code>min-width: 0</code> prevents flex blowout</td></tr>
+            <tr><td>Panel</td><td><code>.slide-panel</code></td><td>Image + quote content, shown/hidden via <code>[hidden]</code></td></tr>
+            <tr><td>Pointer</td><td><code>.slider-pointer</code></td><td>Visual indicator linking active tab to card</td></tr>
+            <tr><td>Tabs</td><td><code>.topic-tabs</code></td><td>Navigation, ARIA tablist, keyboard handler</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Animation Tokens -->
+    <div class="case-study__block case-study__block--solution">
+      <h2 class="case-study__heading">
+        <span class="case-study__icon" aria-hidden="true">&#9654;</span>
+        Animation Tokens
+      </h2>
+      <p>Easing curves and durations are tokenised too, so motion is consistent across the entire UI. A <code>prefers-reduced-motion</code> media query disables all animations for users who need it.</p>
+
+      <div class="ds-table-wrap">
+        <table class="ds-table">
+          <thead>
+            <tr>
+              <th scope="col">Token</th>
+              <th scope="col">Value</th>
+              <th scope="col">Usage</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td><code>--ease-out</code></td><td><code>cubic-bezier(0, 0, 0.2, 1)</code></td><td>Hover, focus, entrance</td></tr>
+            <tr><td><code>--ease-in</code></td><td><code>cubic-bezier(0.4, 0, 1, 1)</code></td><td>Exit, active press</td></tr>
+            <tr><td><code>--ease-in-out</code></td><td><code>cubic-bezier(0.4, 0, 0.2, 1)</code></td><td>Pointer movement</td></tr>
+            <tr><td><code>--ease-bounce</code></td><td><code>cubic-bezier(0.34, 1.56, 0.64, 1)</code></td><td>Defined for future use (not currently referenced)</td></tr>
+            <tr><td><code>--duration-fast</code></td><td>100ms</td><td>Colour transitions</td></tr>
+            <tr><td><code>--duration-normal</code></td><td>200ms</td><td>Pointer, transform</td></tr>
+            <tr><td><code>--duration-slow</code></td><td>300ms</td><td>Slide entrance, content fade</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </section>
+
+  <footer class="portfolio-footer">
+    <p>Want to get in touch? Email me at <a href="mailto:costanza@bromleywebworks.co.uk">costanza@bromleywebworks.co.uk</a></p>
+    <a class="portfolio-footer__github" href="https://github.com/costikid/iwocatestimonialslideraccessibility" target="_blank" rel="noopener" aria-label="View the source code on GitHub">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+        <path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.438 9.8 8.205 11.385.6.113.82-.26.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.807 1.305 3.492.998.108-.776.418-1.305.762-1.605-2.665-.305-5.467-1.332-5.467-5.93 0-1.31.468-2.382 1.236-3.222-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.3 1.23a11.5 11.5 0 0 1 3-.405c1.02.005 2.045.138 3 .405 2.29-1.552 3.297-1.23 3.297-1.23.654 1.652.243 2.873.12 3.176.77.84 1.234 1.912 1.234 3.222 0 4.61-2.807 5.622-5.48 5.92.43.37.814 1.103.814 2.222 0 1.604-.014 2.898-.014 3.293 0 .32.216.694.825.576C20.565 21.795 24 17.298 24 12 24 5.37 18.627 0 12 0z"/>
+      </svg>
+      <span>View source on GitHub</span>
+    </a>
+  </footer>
+
+</main>
+
+<script src="script.js"></script>
+</body>
+</html>
