@@ -83,7 +83,7 @@
   <section class="hero">
     <div class="hero__inner">
       <h1 class="hero__title">Iwoca<br><span>Website Designer and Developer Job Application</span></h1>
-      <p class="hero__subtitle">To apply for this job, I have decided to show you how I would improve the accessibility of a specific section of your homepage, the testimonials slider</p>
+      <p class="hero__subtitle">As a front-end engineer applying for this role, I have decided to show you how I would improve the web accessibility of a specific section of your homepage — the testimonials slider — so that it meets WCAG standards and works fully with keyboard navigation and screen readers.</p>
    
     </div>
   </section>
@@ -101,6 +101,7 @@
         <li>No ARIA tab roles (<code>role=&quot;tablist&quot;</code>, <code>role=&quot;tab&quot;</code>, <code>role=&quot;tabpanel&quot;</code>)</li>
         <li>No <code>aria-selected</code> or <code>aria-controls</code> attributes</li>
         <li>No <code>keydown</code> handler for arrow keys</li>
+        <li>Screen reader users could not identify which slide was active</li>
         <li>Assistive technology users could not navigate the slider with right and left arrow keys</li>
       </ul>
 
@@ -177,7 +178,7 @@
         <span class="case-study__icon" aria-hidden="true">&#10003;</span>
         The Solution
       </h3>
-      <p>I implemented the <a href="https://www.w3.org/WAI/ARIA/apg/patterns/tabs/" target="_blank" rel="noopener">WAI-ARIA Tabs pattern</a> with two key changes:</p>
+      <p>I implemented the <a href="https://www.w3.org/WAI/ARIA/apg/patterns/tabs/" target="_blank" rel="noopener">WAI-ARIA Tabs pattern</a> to bring the slider up to WCAG accessibility standards. The key changes enable full keyboard navigation with a roving tabindex so screen reader users can move between slides using arrow keys alone:</p>
 
       <details class="code-details" open>
         <summary class="code-label">After — HTML (active tab enters Tab order)</summary>
@@ -253,7 +254,7 @@
  
   <section class="demo-section" id="live-demo">
     <h2 class="section-title">Live Demo</h2>
-    <p class="section-intro">Click with your mouse on the "Purchasing equipment" button, then use the left and right arrows of your keyboard to show the different slides</p>
+    <p class="section-intro">Click with your mouse on the "Purchasing equipment" button, then use the left and right arrows of your keyboard to show the different slides. This keyboard navigation works for screen reader users too — try it with your eyes closed.</p>
 
   <div class="testimonial-slider" aria-label="Customer testimonials">
 

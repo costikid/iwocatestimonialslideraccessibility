@@ -1,4 +1,5 @@
-# iwoca Testimonial Slider — Keyboard Accessibility Fix | Costanza C, Front-End Engineer
+# iwoca Testimonial Slider — Keyboard Accessibility Fix | Website Designer and Developer Job Application
+
 
 A case study and live demo showing how to make the **iwoca testimonial slider**
 fully keyboard-accessible by replacing the original Slick slider `<div>` markup
@@ -39,6 +40,12 @@ WCAG, front-end engineer
 ## Live demo
 
 Hosted on GitHub Pages: https://costikid.github.io/iwocatestimonialslideraccessibility/
+
+## Design System
+
+See [DESIGN_SYSTEM.md](DESIGN_SYSTEM.md) for a full report on how this project
+follows design system principles — design tokens, spacing scale, typography
+scale, colour usage, component checklist, and composition pattern.
 
 
 

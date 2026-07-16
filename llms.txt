@@ -1,0 +1,40 @@
+# iwoca Testimonial Slider — Keyboard Accessibility Fix
+
+> A front-end engineer's case study and live demo showing how to make the iwoca testimonial slider fully keyboard-accessible by implementing the WAI-ARIA Tabs pattern with roving tabindex, real button elements, and arrow-key navigation for screen reader and keyboard users.
+
+## Problem
+
+The original iwoca testimonial slider was built on the Slick slider jQuery library. The topic buttons were plain <div> elements with tabindex="0" on every item — no ARIA roles, no aria-selected, no aria-controls, and no keydown handler. This meant keyboard users could not navigate between slides with arrow keys, screen reader users had no indication of which slide was active, and every button was in the Tab order requiring excessive Tab presses.
+
+## Solution
+
+Implemented the WAI-ARIA Tabs pattern (https://www.w3.org/WAI/ARIA/apg/patterns/tabs/):
+
+- Every topic control is a real <button> (not a <div>), natively focusable and operable with click, Enter, and Space
+- role="tablist" / role="tab" / role="tabpanel" with aria-selected and aria-controls on each tab
+- Roving tabindex: only the active tab has tabindex="0"; the rest are tabindex="-1"
+- Arrow keys (Left/Right/Up/Down), Home, and End move focus and activate tabs
+- Arrow key navigation works from both the tab buttons and the card panel itself
+- aria-live="polite" on the viewport announces content changes to screen reader users
+- Drag/swipe gesture support via pointer events
+
+## Tech stack
+
+Plain HTML, CSS, and vanilla JavaScript — no frameworks, no build step, no dependencies.
+
+## Live demo
+
+https://costikid.github.io/iwocatestimonialslideraccessibility/
+
+## Source code
+
+https://github.com/costikid/iwocatestimonialslideraccessibility
+
+## Author
+
+Costanza C — Front-end engineer
+Email: costanza@bromleywebworks.co.uk
+
+## Keywords
+
+iwoca, web accessibility, ARIA tabs, keyboard navigation, testimonial slider, WAI-ARIA, roving tabindex, Slick slider accessibility fix, screen reader, WCAG, front-end engineer
