@@ -1,0 +1,413 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- Primary SEO -->
+<title>Fixing the iwoca Testimonial Slider for Keyboard Accessibility | Costanza C, Front-End Engineer</title>
+<meta name="description" content="A case study showing how I made the iwoca testimonial slider keyboard-accessible by replacing Slick slider divs with the WAI-ARIA Tabs pattern — real buttons, roving tabindex, and full arrow-key navigation for screen reader and keyboard users.">
+<meta name="keywords" content="iwoca, accessibility, ARIA tabs, keyboard navigation, testimonial slider, WAI-ARIA, screen reader, roving tabindex, Slick slider fix, front-end engineer, web accessibility, WCAG">
+<meta name="author" content="Costanza C">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://costikid.github.io/iwocatestimonialslideraccessibility/">
+
+<!-- Open Graph — for LinkedIn, Facebook, Slack, etc. -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="Fixing the iwoca Testimonial Slider for Keyboard Accessibility">
+<meta property="og:description" content="A front-end engineer's case study: replacing Slick slider divs with the WAI-ARIA Tabs pattern to make the iwoca testimonial slider fully keyboard-accessible with arrow-key navigation, roving tabindex, and proper ARIA roles.">
+<meta property="og:url" content="https://costikid.github.io/iwocatestimonialslideraccessibility/">
+<meta property="og:site_name" content="Costanza C — Front-End Engineer">
+<meta property="og:image" content="https://costikid.github.io/iwocatestimonialslideraccessibility/assets/images/avatar-marketing.jpg">
+<meta property="og:image:alt" content="Screenshot of the accessible testimonial slider built for iwoca">
+
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Fixing the iwoca Testimonial Slider for Keyboard Accessibility">
+<meta name="twitter:description" content="Case study: how I made the iwoca testimonial slider keyboard-accessible using the WAI-ARIA Tabs pattern — real buttons, roving tabindex, and full arrow-key navigation.">
+<meta name="twitter:image" content="https://costikid.github.io/iwocatestimonialslideraccessibility/assets/images/avatar-marketing.jpg">
+
+<!-- Fonts & styles -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+
+<!-- Structured data: Person + CreativeWork case study -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Person",
+      "name": "Costanza C",
+      "jobTitle": "Front-End Engineer",
+      "email": "costanza@bromleywebworks.co.uk",
+      "url": "https://costikid.github.io/iwocatestimonialslideraccessibility/"
+    },
+    {
+      "@type": "CreativeWork",
+      "name": "Making a Testimonial Slider Keyboard-Accessible",
+      "description": "A case study demonstrating how to fix the iwoca testimonial slider for keyboard and screen reader users by implementing the WAI-ARIA Tabs pattern with roving tabindex, real button elements, and arrow-key navigation.",
+      "author": { "@id": "https://costikid.github.io/iwocatestimonialslideraccessibility/#person" },
+      "about": [
+        "Web accessibility",
+        "ARIA tabs pattern",
+        "Keyboard navigation",
+        "Screen reader support",
+        "iwoca testimonial slider"
+      ],
+      "keywords": "iwoca, accessibility, ARIA tabs, keyboard navigation, testimonial slider, WAI-ARIA, roving tabindex, Slick slider, front-end engineer",
+      "url": "https://costikid.github.io/iwocatestimonialslideraccessibility/"
+    }
+  ]
+}
+</script>
+</head>
+<body>
+
+<header>
+  <nav class="portfolio-nav">
+    <div class="portfolio-nav__inner">
+      <a href="#top" class="portfolio-nav__brand">Costanza</a>
+      <ul class="portfolio-nav__links">
+        <li><a href="#case-study">Case Study</a></li>
+        <li><a href="#live-demo">Live Demo</a></li>
+      </ul>
+    </div>
+  </nav>
+</header>
+
+<main class="page" id="top">
+
+  <section class="hero">
+    <div class="hero__inner">
+      <h1 class="hero__title">Iwoca<br><span>Website Designer and Developer Job Application</span></h1>
+      <p class="hero__subtitle">To apply for this job, I have decided to show you how I would improve the accessibility of a specific section of your homepage, the testimonials slider</p>
+   
+    </div>
+  </section>
+
+  <section class="case-study" id="case-study">
+    <h2 class="section-title">Case Study: Making a Testimonial Slider Keyboard-Accessible</h2>
+
+    <div class="case-study__block case-study__block--problem">
+      <h3 class="case-study__heading">
+        <span class="case-study__icon" aria-hidden="true">&#9888;</span>
+        The Problem: Slider with No Keyboard Support for right and left arrows
+      </h3>
+      <p>The original widget was built on the <strong>Slick slider</strong> jQuery library. The control buttons were plain <code>&lt;div&gt;</code> elements — not real <code>&lt;button&gt;</code>s — with <code>tabindex=&quot;0&quot;</code> on <em>every</em> item. This created several accessibility barriers:</p>
+      <ul class="problem-list">
+        <li>No ARIA tab roles (<code>role=&quot;tablist&quot;</code>, <code>role=&quot;tab&quot;</code>, <code>role=&quot;tabpanel&quot;</code>)</li>
+        <li>No <code>aria-selected</code> or <code>aria-controls</code> attributes</li>
+        <li>No <code>keydown</code> handler for arrow keys</li>
+        <li>Assistive technology users could not navigate the slider with right and left arrow keys</li>
+      </ul>
+
+      <div class="problem-demo">
+        <video class="problem-demo__video"
+               autoplay muted loop playsinline preload="auto" controls
+               aria-label="Screen recording showing the original slider where arrow keys do not switch between slides">
+          <source src="assets/images/Not accessible video example.mp4" type="video/mp4">
+        </video>
+        <p class="problem-demo__caption">
+          In the recording above I keep pressing the right and left arrow keys
+          to move between the different slides using the buttons, but the
+          slider does not respond — the original widget has no keyboard
+          handler, so arrow-key navigation is impossible.
+        </p>
+      </div>
+
+      <details class="code-details" open>
+        <summary class="code-label">Before — Original HTML (Slick slider, div soup, no ARIA roles)</summary>
+<pre class="code-block"><code><span class="tok-tag"></span>&lt;div</span> <span class="tok-attr">class</span>=<span class="tok-str">&quot;testimonial-slider_controls&quot;</span><span class="tok-tag">&gt;</span>
+  <span class="tok-tag">&lt;div</span> <span class="tok-attr">class</span>=<span class="tok-str">&quot;testimonial-controls slick-initialized slick-slider&quot;</span><span class="tok-tag">&gt;</span>
+    <span class="tok-tag">&lt;div</span> <span class="tok-attr">class</span>=<span class="tok-str">&quot;slick-list draggable&quot;</span><span class="tok-tag">&gt;</span>
+      <span class="tok-tag">&lt;div</span> <span class="tok-attr">class</span>=<span class="tok-str">&quot;slick-track&quot;</span> <span class="tok-attr">style</span>=<span class="tok-str">&quot;opacity: 1; width: 936px; ...&quot;</span><span class="tok-tag">&gt;</span>
+
+        <span class="tok-comment">&lt;!-- Every item: tabindex=&quot;0&quot;, no role, no aria-selected --&gt;</span>
+        <span class="tok-tag">&lt;div</span> <span class="tok-attr">id</span>=<span class="tok-str">&quot;testimonial-btn-1&quot;</span>
+             <span class="tok-attr">class</span>=<span class="tok-str">&quot;testimonial-control__item slick-slide slick-current slick-active&quot;</span>
+             <span class="tok-attr">data-slick-index</span>=<span class="tok-str">&quot;0&quot;</span>
+             <span class="tok-attr">aria-hidden</span>=<span class="tok-str">&quot;false&quot;</span>
+             <span class="tok-attr">tabindex</span>=<span class="tok-str">&quot;0&quot;</span>
+             <span class="tok-attr">style</span>=<span class="tok-str">&quot;width: 234px;&quot;</span><span class="tok-tag">&gt;</span>
+          <span class="tok-tag">&lt;div</span> <span class="tok-attr">class</span>=<span class="tok-str">&quot;testimonial-control__text large-text text-medium&quot;</span><span class="tok-tag">&gt;</span>
+            Purchasing equipment
+          <span class="tok-tag">&lt;/div&gt;</span>
+        <span class="tok-tag">&lt;/div&gt;</span>
+
+        <span class="tok-tag">&lt;div</span> <span class="tok-attr">id</span>=<span class="tok-str">&quot;testimonial-btn-2&quot;</span>
+             <span class="tok-attr">class</span>=<span class="tok-str">&quot;testimonial-control__item slick-slide slick-active&quot;</span>
+             <span class="tok-attr">data-slick-index</span>=<span class="tok-str">&quot;1&quot;</span>
+             <span class="tok-attr">aria-hidden</span>=<span class="tok-str">&quot;false&quot;</span>
+             <span class="tok-attr">tabindex</span>=<span class="tok-str">&quot;0&quot;</span>
+             <span class="tok-attr">style</span>=<span class="tok-str">&quot;width: 234px;&quot;</span><span class="tok-tag">&gt;</span>
+          <span class="tok-comment">&lt;!-- Pay a due bill --&gt;</span>
+        <span class="tok-tag">&lt;/div&gt;</span>
+
+        <span class="tok-tag">&lt;div</span> <span class="tok-attr">id</span>=<span class="tok-str">&quot;testimonial-btn-3&quot;</span>
+             <span class="tok-attr">class</span>=<span class="tok-str">&quot;testimonial-control__item slick-slide slick-active&quot;</span>
+             <span class="tok-attr">data-slick-index</span>=<span class="tok-str">&quot;2&quot;</span>
+             <span class="tok-attr">aria-hidden</span>=<span class="tok-str">&quot;false&quot;</span>
+             <span class="tok-attr">tabindex</span>=<span class="tok-str">&quot;0&quot;</span>
+             <span class="tok-attr">style</span>=<span class="tok-str">&quot;width: 234px;&quot;</span><span class="tok-tag">&gt;</span>
+          <span class="tok-comment">&lt;!-- Purchasing stock --&gt;</span>
+        <span class="tok-tag">&lt;/div&gt;</span>
+
+        <span class="tok-tag">&lt;div</span> <span class="tok-attr">id</span>=<span class="tok-str">&quot;testimonial-btn-4&quot;</span>
+             <span class="tok-attr">class</span>=<span class="tok-str">&quot;testimonial-control__item slick-slide slick-active&quot;</span>
+             <span class="tok-attr">data-slick-index</span>=<span class="tok-str">&quot;3&quot;</span>
+             <span class="tok-attr">aria-hidden</span>=<span class="tok-str">&quot;false&quot;</span>
+             <span class="tok-attr">tabindex</span>=<span class="tok-str">&quot;0&quot;</span>
+             <span class="tok-attr">style</span>=<span class="tok-str">&quot;width: 234px;&quot;</span><span class="tok-tag">&gt;</span>
+          <span class="tok-comment">&lt;!-- Marketing --&gt;</span>
+        <span class="tok-tag">&lt;/div&gt;</span>
+
+      <span class="tok-tag">&lt;/div&gt;</span>
+    <span class="tok-tag">&lt;/div&gt;</span>
+  <span class="tok-tag">&lt;/div&gt;</span>
+<span class="tok-tag">&lt;/div&gt;</span></code></pre>
+      </details>
+
+     
+
+    <div class="case-study__block case-study__block--solution">
+      <h3 class="case-study__heading">
+        <span class="case-study__icon" aria-hidden="true">&#10003;</span>
+        The Solution
+      </h3>
+      <p>I implemented the <a href="https://www.w3.org/WAI/ARIA/apg/patterns/tabs/" target="_blank" rel="noopener">WAI-ARIA Tabs pattern</a> with two key changes:</p>
+
+      <details class="code-details" open>
+        <summary class="code-label">After — HTML (active tab enters Tab order)</summary>
+<pre class="code-block"><code><span class="tok-comment"></span>&lt;!-- Active tab: tabindex=&quot;0&quot; (in Tab order) --&gt;</span>
+<span class="tok-tag">&lt;button</span> <span class="tok-attr">role</span>=<span class="tok-str">&quot;tab&quot;</span>
+        <span class="tok-attr">aria-selected</span>=<span class="tok-str">&quot;true&quot;</span>
+        <span class="tok-attr">tabindex</span>=<span class="tok-str">&quot;0&quot;</span><span class="tok-tag">&gt;</span>
+  Marketing
+<span class="tok-tag">&lt;/button&gt;</span>
+
+<span class="tok-comment">&lt;!-- Inactive tabs: tabindex=&quot;-1&quot; (skipped by Tab, --&gt;</span>
+<span class="tok-comment">&lt;!-- reachable via arrow keys) --&gt;</span>
+<span class="tok-tag">&lt;button</span> <span class="tok-attr">role</span>=<span class="tok-str">&quot;tab&quot;</span>
+        <span class="tok-attr">aria-selected</span>=<span class="tok-str">&quot;false&quot;</span>
+        <span class="tok-attr">tabindex</span>=<span class="tok-str">&quot;-1&quot;</span><span class="tok-tag">&gt;</span>
+  Purchasing equipment
+<span class="tok-tag">&lt;/button&gt;</span></code></pre>
+      </details>
+
+      <details class="code-details">
+        <summary class="code-label">After — JavaScript (roving tabindex in activate())</summary>
+<pre class="code-block"><code><span class="tok-keyword"></span>function</span> <span class="tok-fn">activate</span>(index, moveFocus) {
+  <span class="tok-keyword">const</span> newIndex = (index + tabs.length) % tabs.length;
+
+  tabs.<span class="tok-fn">forEach</span>((tab, i) =&gt; {
+    <span class="tok-keyword">const</span> selected = i === newIndex;
+    tab.<span class="tok-fn">setAttribute</span>(<span class="tok-str">'aria-selected'</span>, <span class="tok-fn">String</span>(selected));
+    tab.tabIndex = selected ? <span class="tok-num">0</span> : <span class="tok-num">-1</span>;  <span class="tok-comment">// roving tabindex</span>
+    tab.classList.<span class="tok-fn">toggle</span>(<span class="tok-str">'topic-tab--active'</span>, selected);
+  });
+
+  panels.<span class="tok-fn">forEach</span>((panel, i) =&gt; {
+    panel.hidden = i !== newIndex;
+  });
+
+  <span class="tok-keyword">if</span> (moveFocus) tabs[newIndex].<span class="tok-fn">focus</span>();
+  <span class="tok-fn">movePointer</span>(tabs[newIndex]);
+}</code></pre>
+      </details>
+
+      <details class="code-details">
+        <summary class="code-label">After — JavaScript (arrow key handler)</summary>
+<pre class="code-block"><code>tablist.<span class="tok-fn">addEventListener</span>(<span class="tok-str">'keydown'</span>, (e) =&gt; {
+  <span class="tok-keyword">const</span> currentIndex = <span class="tok-fn">getActiveIndex</span>();
+  <span class="tok-keyword">let</span> newIndex = <span class="tok-keyword">null</span>;
+
+  <span class="tok-keyword">switch</span> (e.key) {
+    <span class="tok-keyword">case</span> <span class="tok-str">'ArrowRight'</span>:
+    <span class="tok-keyword">case</span> <span class="tok-str">'ArrowDown'</span>:
+      newIndex = currentIndex + <span class="tok-num">1</span>;
+      <span class="tok-keyword">break</span>;
+    <span class="tok-keyword">case</span> <span class="tok-str">'ArrowLeft'</span>:
+    <span class="tok-keyword">case</span> <span class="tok-str">'ArrowUp'</span>:
+      newIndex = currentIndex - <span class="tok-num">1</span>;
+      <span class="tok-keyword">break</span>;
+    <span class="tok-keyword">case</span> <span class="tok-str">'Home'</span>:
+      newIndex = <span class="tok-num">0</span>;
+      <span class="tok-keyword">break</span>;
+    <span class="tok-keyword">case</span> <span class="tok-str">'End'</span>:
+      newIndex = tabs.length - <span class="tok-num">1</span>;
+      <span class="tok-keyword">break</span>;
+    <span class="tok-keyword">default</span>:
+      <span class="tok-keyword">return</span>;
+  }
+
+  e.<span class="tok-fn">preventDefault</span>();
+  <span class="tok-fn">activate</span>(newIndex, <span class="tok-keyword">true</span>);
+});</code></pre>
+      </details>
+    </div>
+  </section>
+
+ 
+  <section class="demo-section" id="live-demo">
+    <h2 class="section-title">Live Demo</h2>
+    <p class="section-intro">Click with your mouse on the "Purchasing equipment" button, then use the left and right arrows of your keyboard to show the different slides</p>
+
+  <div class="testimonial-slider" aria-label="Customer testimonials">
+
+    <!-- Live card: image + quote. aria-live announces content changes to screen reader users -->
+    <div class="slider-card">
+
+      <div class="slider-viewport" aria-live="polite">
+        <!-- Panels: one per testimonial. Only the active one is visible/focusable. -->
+
+        <article class="slide-panel"
+                 id="panel-purchasing-equipment"
+                 role="tabpanel"
+                 aria-labelledby="tab-purchasing-equipment"
+                 tabindex="0" hidden>
+          <figure class="slide-media">
+            <img src="assets/images/purchasing equipment.webp" alt="Portrait of Cecilia from Nails and Cocktails" width="400" height="373">
+            <figcaption class="visually-hidden">Cecilia, Nails and Cocktails</figcaption>
+          </figure>
+          <div class="slide-content">
+            <span class="quote-mark" aria-hidden="true">&#8220;</span>
+            <blockquote class="quote-text">
+              <p>With iwoca's reasonable rates and amazing staff, we were able to quickly obtain a loan to purchase equipment before our grand opening. Sophie was very supportive and walked us through the process.</p>
+            </blockquote>
+            <a class="read-more" href="#">Read more<span class="visually-hidden"> about Priya's story</span></a>
+            <p class="author-name">Nails and Cocktails</p>
+            <p class="author-role">Cecilia</p>
+          </div>
+        </article>
+
+        <article class="slide-panel"
+                 id="panel-pay-bill"
+                 role="tabpanel"
+                 aria-labelledby="tab-pay-bill"
+                 tabindex="0" hidden>
+          <figure class="slide-media">
+            <img src="assets/images/pay a due bill.webp" alt="Portrait of Paul from Aldershot Soft Play Centre" width="400" height="373">
+            <figcaption class="visually-hidden">Paul, Aldershot Soft Play Centre</figcaption>
+          </figure>
+          <div class="slide-content">
+            <span class="quote-mark" aria-hidden="true">&#8220;</span>
+            <blockquote class="quote-text">
+              <p>iwoca helped to stave off a shortfall when our first rent payment was due, I didn’t have enough to pay for everything because the centre was so new. Applying for funding through iwoca was very straightforward.</p>
+            </blockquote>
+            <a class="read-more" href="#">Read more<span class="visually-hidden"> about Daniel's story</span></a>
+            <p class="author-name">Aldershot Soft Play Centre</p>
+            <p class="author-role">Paul</p>
+          </div>
+        </article>
+
+        <article class="slide-panel"
+                 id="panel-purchase-stock"
+                 role="tabpanel"
+                 aria-labelledby="tab-purchase-stock"
+                 tabindex="0" hidden>
+          <figure class="slide-media">
+            <img src="assets/images/purchasing stock.webp" alt="Portrait of Mike from Hub Vélo" width="400" height="373">
+            <figcaption class="visually-hidden">Mike, Hub Vélo</figcaption>
+          </figure>
+          <div class="slide-content">
+            <span class="quote-mark" aria-hidden="true">&#8220;</span>
+            <blockquote class="quote-text">
+              <p>We had an opportunity to stock a unique bike brand that nobody else in the country was selling... Getting funding from iwoca was a big step for us but it made a massive difference.</p>
+            </blockquote>
+            <a class="read-more" href="#">Read more<span class="visually-hidden"> about Marcus's story</span></a>
+            <p class="author-name">Hub Vélo</p>
+            <p class="author-role">Mike</p>
+          </div>
+        </article>
+
+        <article class="slide-panel"
+                 id="panel-marketing"
+                 role="tabpanel"
+                 aria-labelledby="tab-marketing"
+                 tabindex="0">
+          <figure class="slide-media">
+            <img src="assets/images/avatar-marketing.jpg" alt="Portrait of Rebecca Lockwood, trainer for female entrepreneurs" width="400" height="373">
+            <figcaption class="visually-hidden">Rebecca Lockwood, trainer for female entrepreneurs</figcaption>
+          </figure>
+          <div class="slide-content">
+            <span class="quote-mark" aria-hidden="true">&#8220;</span>
+            <blockquote class="quote-text">
+              <p>We use iwoca finance for our advertising and it always generates an amazing return on investment. iwoca is my go-to when I require quick funding to help me run successful marketing campaigns.</p>
+            </blockquote>
+            <a class="read-more" href="#">Read more<span class="visually-hidden"> about Rebecca's story</span></a>
+            <p class="author-name">Rebecca Lockwood <span class="author-name__role">(trainer for female entrepreneurs)</span></p>
+            <p class="author-role">Rebecca</p>
+          </div>
+        </article>
+
+      </div>
+
+      <!-- Pointer that visually links the active topic button to the card above it -->
+      <span class="slider-pointer" aria-hidden="true"></span>
+    </div>
+
+   
+    <div class="topic-tabs" role="tablist" aria-label="Choose a testimonial by topic" aria-orientation="horizontal">
+
+      <button type="button"
+              role="tab"
+              id="tab-purchasing-equipment"
+              class="topic-tab"
+              aria-selected="false"
+              aria-controls="panel-purchasing-equipment"
+              tabindex="-1">
+        <img class="topic-tab__icon" src="assets/icons/icon-purchasing-equipment.svg" alt="" width="24" height="24">
+        <span class="topic-tab__label">Purchasing equipment</span>
+      </button>
+
+      <button type="button"
+              role="tab"
+              id="tab-pay-bill"
+              class="topic-tab"
+              aria-selected="false"
+              aria-controls="panel-pay-bill"
+              tabindex="-1">
+        <img class="topic-tab__icon" src="assets/icons/icon-pay-bill.svg" alt="" width="24" height="24">
+        <span class="topic-tab__label">Pay a due bill</span>
+      </button>
+
+      <button type="button"
+              role="tab"
+              id="tab-purchase-stock"
+              class="topic-tab"
+              aria-selected="false"
+              aria-controls="panel-purchase-stock"
+              tabindex="-1">
+        <img class="topic-tab__icon" src="assets/icons/icon-purchase-stock.svg" alt="" width="24" height="24">
+        <span class="topic-tab__label">Purchasing stock</span>
+      </button>
+
+      <button type="button"
+              role="tab"
+              id="tab-marketing"
+              class="topic-tab topic-tab--active"
+              aria-selected="true"
+              aria-controls="panel-marketing"
+              tabindex="0">
+        <img class="topic-tab__icon" src="assets/icons/icon-marketing.svg" alt="" width="24" height="24">
+        <span class="topic-tab__label">Marketing</span>
+      </button>
+
+    </div>
+
+  </div>
+
+  </section>
+
+  <footer class="portfolio-footer">
+    <p>Want to get in touch? Email me at <a href="mailto:costanza@bromleywebworks.co.uk">costanza@bromleywebworks.co.uk</a></p>
+  </footer>
+
+</main>
+
+<script src="script.js"></script>
+</body>
+</html>

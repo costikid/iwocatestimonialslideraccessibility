@@ -1,0 +1,841 @@
+/* ==========================================================================
+   Design tokens — colours picked directly from the reference screenshot
+   ========================================================================== */
+:root {
+  /* Palette */
+  --color-navy:        #0b182a; /* headings, icon strokes, quote text   */
+  --color-red:         #f95950; /* accent: quote mark, icon fills       */
+  --color-red-light:   #df7a73; /* lighter coral for problem border     */
+  --color-green:       #2a9a6f; /* solution border, focus ring          */
+  --color-slate:       #486791; /* body text, author name, link hover   */
+  --color-blue-gray:   #8499b8; /* active pill background               */
+  --color-brown:       #8a5f4d; /* links                                */
+  --color-tan:         #c4afa5; /* pill hover background                */
+  --color-light:       #e0e8ed; /* pill background, borders             */
+
+  /* Semantic colours — reference palette tokens, never raw hex */
+  --color-link:          var(--color-brown);
+  --color-link-hover:    var(--color-slate);
+  --color-name:          var(--color-navy);
+  --color-role:          var(--color-navy);
+  --color-pill-bg:       var(--color-light);
+  --color-pill-bg-hover: var(--color-slate);
+  --color-pill-bg-active: var(--color-blue-gray);
+  --color-white:         #FFFFFF;
+  --color-focus:         var(--color-green);
+
+  /* Typography */
+  --font-body:  "Public Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --font-serif: Georgia, "Times New Roman", serif;
+  --font-mono:  "SF Mono", "Fira Code", Consolas, "Courier New", monospace;
+
+  --font-size-xs:   13px;
+  --font-size-sm:   14px;
+  --font-size-base: 15px;
+  --font-size-md:   16px;
+  --font-size-lg:   17px;
+  --font-size-xl:   18px;
+  --font-size-2xl:  20px;
+  --font-size-3xl:  22px;
+  --font-size-4xl:  24px;
+  --font-size-5xl:  26px;
+  --font-size-6xl:  32px;
+  --font-size-7xl:  34px;
+  --font-size-8xl:  48px;
+
+  /* Spacing — 2px base scale */
+  --space-1:  2px;
+  --space-2:  4px;
+  --space-3:  6px;
+  --space-4:  8px;
+  --space-5:  10px;
+  --space-6:  12px;
+  --space-7:  14px;
+  --space-8:  16px;
+  --space-9:  18px;
+  --space-10: 20px;
+  --space-11: 22px;
+  --space-12: 24px;
+  --space-14: 28px;
+  --space-16: 32px;
+  --space-18: 36px;
+  --space-20: 40px;
+  --space-22: 44px;
+  --space-23: 46px;
+  --space-24: 48px;
+  --space-28: 56px;
+  --space-32: 64px;
+  --space-40: 80px;
+
+  /* Radius */
+  --radius-sm:   4px;
+  --radius-md:   6px;
+  --radius-lg:   12px;
+  --radius-xl:   16px;
+  --radius-card: 20px;
+  --radius-pill: 999px;
+
+  /* Shadow */
+  --shadow-card: 0 24px 48px -20px rgba(11, 24, 42, 0.18), 0 2px 8px rgba(11, 24, 42, 0.06);
+
+  /* Animation — easing curves and duration scale */
+  --ease-out: cubic-bezier(0.0, 0.0, 0.2, 1);
+  --ease-in: cubic-bezier(0.4, 0.0, 1, 1);
+  --ease-in-out: cubic-bezier(0.4, 0.0, 0.2, 1);
+  --ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  --duration-instant: 50ms;
+  --duration-fast: 100ms;
+  --duration-normal: 200ms;
+  --duration-slow: 300ms;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background: var(--color-white);
+  font-family: var(--font-body);
+  color: var(--color-navy);
+}
+
+.page {
+  max-width: 1160px;
+  margin: 0 auto;
+  padding: var(--space-24) var(--space-10) var(--space-40);
+}
+
+/* Visually hidden but available to assistive tech */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Consistent, visible keyboard focus everywhere in the widget */
+.testimonial-slider :focus-visible {
+  outline: 3px solid var(--color-focus);
+  outline-offset: 3px;
+  border-radius: var(--radius-md);
+}
+
+/* ==========================================================================
+   Card: photo + quote
+   ========================================================================== */
+.testimonial-slider {
+  position: relative;
+}
+
+.slider-card {
+  position: relative;
+  display: flex;
+  align-items: stretch;
+  background: var(--color-white);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card);
+  overflow: hidden;
+  cursor: grab;
+  touch-action: pan-y;
+  transition: transform var(--duration-normal) var(--ease-out);
+}
+
+.slider-card.is-dragging {
+  transition: none;
+}
+
+.slider-card:active {
+  cursor: grabbing;
+}
+
+.slider-viewport {
+  flex: 1 1 auto;
+  display: flex;
+  min-width: 0;
+}
+
+.slide-panel {
+  display: flex;
+  width: 100%;
+  align-items: stretch;
+}
+
+.slide-panel[hidden] { display: none; }
+
+.slide-panel:not([hidden]) {
+  animation: slideEnter var(--duration-slow) var(--ease-out);
+}
+
+.slide-panel:not([hidden]) .quote-mark {
+  animation: fadeSlideUp var(--duration-slow) var(--ease-out) 0ms both;
+}
+
+.slide-panel:not([hidden]) .quote-text {
+  animation: fadeSlideUp var(--duration-slow) var(--ease-out) 60ms both;
+}
+
+.slide-panel:not([hidden]) .read-more {
+  animation: fadeSlideUp var(--duration-slow) var(--ease-out) 120ms both;
+}
+
+.slide-panel:not([hidden]) .author-name,
+.slide-panel:not([hidden]) .author-role {
+  animation: fadeSlideUp var(--duration-slow) var(--ease-out) 180ms both;
+}
+
+@keyframes slideEnter {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.slide-media {
+  flex: 0 0 40%;
+  max-width: 400px;
+  min-height: var(--space-16);
+  margin: 0;
+}
+
+.slide-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.slide-content {
+  flex: 1 1 auto;
+  position: relative;
+  padding: var(--space-22) var(--space-28) var(--space-20) var(--space-24);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.quote-mark {
+  display: block;
+  font-family: var(--font-serif);
+  font-size: var(--space-28);
+  line-height: 1;
+  color: var(--color-red);
+  font-weight: 700;
+  margin-bottom: var(--space-2);
+}
+
+.quote-text {
+  margin: 0 0 var(--space-10);
+}
+
+.quote-text p {
+  margin: 0;
+  font-size: var(--font-size-2xl);
+  line-height: 1.5;
+  color: var(--color-navy);
+  font-weight: 500;
+}
+
+.read-more {
+  display: inline-block;
+  color: var(--color-slate);
+  font-size: var(--font-size-base);
+  font-weight: 600;
+  text-decoration: none;
+  margin-bottom: var(--space-11);
+}
+
+.read-more:hover,
+.read-more:focus-visible {
+  text-decoration: underline;
+  color: var(--color-blue-gray);
+}
+
+.author-name {
+  margin: 0 0 var(--space-1);
+  font-size: var(--font-size-base);
+  font-weight: 700;
+  color: var(--color-name);
+}
+
+.author-name__role {
+  font-weight: 400;
+}
+
+/* The reference markup repeats the first name again underneath -
+   keep that pattern but hide the visual duplicate from screen readers,
+   since it doesn't add new information for assistive tech users. */
+.author-role {
+  margin: 0;
+  font-size: var(--font-size-base);
+  color: var(--color-role);
+}
+
+/* ==========================================================================
+   Prev / next arrows
+   ========================================================================== */
+.slider-arrow {
+  flex: 0 0 auto;
+  align-self: center;
+  width: var(--space-22);
+  height: var(--space-22);
+  margin: 0 var(--space-6);
+  border: none;
+  border-radius: 50%;
+  background: var(--color-pill-bg);
+  color: var(--color-navy);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color var(--duration-fast) var(--ease-out);
+}
+
+.slider-arrow svg { width: var(--space-10); height: var(--space-10); }
+
+.slider-arrow:hover { background: var(--color-pill-bg-hover); }
+.slider-arrow:active { background: var(--color-pill-bg-active); }
+
+/* ==========================================================================
+   Pointer that visually connects the active pill to the card
+   ========================================================================== */
+.slider-pointer {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 0;
+  height: 0;
+  border-left: 15px solid transparent;
+  border-right: 15px solid transparent;
+  border-top: 18px solid var(--color-white);
+  filter: drop-shadow(0 6px 4px rgba(11, 24, 42, 0.12));
+  transform: translateX(-50%);
+  transition: left var(--duration-normal) var(--ease-in-out);
+  pointer-events: none;
+}
+
+@media (max-width: 860px) {
+  .slider-pointer { display: none; }
+}
+
+/* ==========================================================================
+   Topic tabs
+   ========================================================================== */
+.topic-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-9);
+  margin-top: var(--space-23);
+}
+
+.topic-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-6);
+  padding: var(--space-7) var(--space-11);
+  background: var(--color-pill-bg);
+  border: 2px solid transparent;
+  border-radius: var(--radius-pill);
+  font-family: inherit;
+  font-size: var(--font-size-base);
+  font-weight: 700;
+  color: var(--color-navy);
+  cursor: pointer;
+  text-align: left;
+  line-height: 1.25;
+  transition: background-color var(--duration-fast) var(--ease-out),
+              border-color var(--duration-fast) var(--ease-out),
+              transform var(--duration-fast) var(--ease-in);
+}
+
+.topic-tab:hover {
+  background: var(--color-pill-bg-hover);
+  color: var(--color-white);
+}
+
+.topic-tab:active {
+  transform: scale(0.97);
+}
+
+.topic-tab[aria-selected="true"] {
+  background: var(--color-light);
+  border-color: var(--color-navy);
+  color: var(--color-navy);
+  font-weight: 600;
+}
+
+.topic-tab__icon {
+  width: 26px;
+  height: 26px;
+  flex: 0 0 auto;
+}
+
+.topic-tab__label {
+  max-width: 8em;
+}
+
+/* ==========================================================================
+   Responsive
+   ========================================================================== */
+@media (max-width: 860px) {
+  .slider-card {
+    flex-direction: column;
+  }
+
+  .slide-panel { flex-direction: column; }
+
+  .slide-media {
+    flex-basis: auto;
+    max-width: 100%;
+    height: 220px;
+  }
+
+  .slide-content {
+    padding: var(--space-16) var(--space-12) var(--space-14);
+  }
+
+  .quote-text p { font-size: var(--font-size-xl); }
+
+  .topic-tabs {
+    justify-content: flex-start;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: var(--space-3);
+    scrollbar-width: thin;
+    scroll-snap-type: x mandatory;
+    position: relative;
+    -webkit-mask-image: linear-gradient(to right, transparent 0, #000 var(--space-12), #000 calc(100% - var(--space-12)), transparent 100%);
+            mask-image: linear-gradient(to right, transparent 0, #000 var(--space-12), #000 calc(100% - var(--space-12)), transparent 100%);
+  }
+
+  .topic-tab {
+    flex: 0 0 auto;
+    scroll-snap-align: start;
+  }
+
+  .topic-tab__label {
+    white-space: nowrap;
+    max-width: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ==========================================================================
+   Portfolio — Navigation
+   ========================================================================== */
+.portfolio-nav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: var(--color-white);
+  border-bottom: 1px solid var(--color-light);
+}
+
+.portfolio-nav__inner {
+  max-width: 1160px;
+  margin: 0 auto;
+  padding: var(--space-8) var(--space-10);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.portfolio-nav__brand {
+  font-size: var(--font-size-2xl);
+  font-weight: 800;
+  color: var(--color-navy);
+  text-decoration: none;
+  letter-spacing: -0.02em;
+}
+
+.portfolio-nav__links {
+  display: flex;
+  gap: var(--space-14);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.portfolio-nav__links a {
+  font-size: var(--font-size-base);
+  font-weight: 600;
+  color: var(--color-name);
+  text-decoration: none;
+  transition: color var(--duration-fast) var(--ease-out);
+}
+
+.portfolio-nav__links a:hover,
+.portfolio-nav__links a:focus-visible {
+  color: var(--color-link);
+}
+
+/* ==========================================================================
+   Portfolio — Hero
+   ========================================================================== */
+.hero {
+  padding: var(--space-40) 0 var(--space-28);
+  text-align: center;
+}
+
+.hero__inner {
+  max-width: 760px;
+  margin: 0 auto;
+}
+
+.hero__title {
+  font-size: var(--font-size-8xl);
+  font-weight: 800;
+  line-height: 1.15;
+  letter-spacing: -0.03em;
+  margin: 0 0 var(--space-10);
+  color: var(--color-navy);
+}
+
+.hero__title span {
+  color: var(--color-red);
+}
+
+.hero__subtitle {
+  font-size: var(--font-size-xl);
+  line-height: 1.6;
+  color: var(--color-role);
+  margin: 0 0 var(--space-16);
+}
+
+.hero__badges {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-6);
+}
+
+.hero__badge {
+  padding: var(--space-4) var(--space-9);
+  background: var(--color-pill-bg);
+  border-radius: var(--radius-pill);
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: var(--color-navy);
+}
+
+/* ==========================================================================
+   Portfolio — Section titles & intros
+   ========================================================================== */
+.section-title {
+  font-size: var(--font-size-6xl);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--color-navy);
+  margin: 0 0 var(--space-8);
+}
+
+.section-intro {
+  font-size: var(--font-size-lg);
+  line-height: 1.6;
+  color: var(--color-role);
+  margin: 0 0 var(--space-20);
+  max-width: 680px;
+}
+
+.section-intro code,
+.improvement-card p code,
+.case-study__block p code {
+  background: var(--color-pill-bg);
+  padding: var(--space-1) var(--space-3);
+  border-radius: var(--radius-sm);
+  font-size: 0.9em;
+  font-family: var(--font-mono);
+}
+
+/* ==========================================================================
+   Portfolio — Case Study
+   ========================================================================== */
+.case-study {
+  margin-bottom: var(--space-32);
+}
+
+.case-study__block {
+  border-radius: var(--radius-xl);
+  padding: var(--space-18) var(--space-18) var(--space-16);
+  margin-bottom: var(--space-16);
+}
+
+.case-study__block--problem {
+  background: rgba(249, 89, 80, 0.06);
+  border: 1px solid rgba(223, 122, 115, 0.4);
+}
+
+.case-study__block--solution {
+  background: rgba(42, 154, 111, 0.06);
+  border: 1px solid rgba(42, 154, 111, 0.4);
+}
+
+.case-study__heading {
+  font-size: var(--font-size-3xl);
+  font-weight: 700;
+  color: var(--color-navy);
+  margin: 0 0 var(--space-8);
+  display: flex;
+  align-items: center;
+  gap: var(--space-5);
+}
+
+.case-study__icon {
+  font-size: var(--font-size-4xl);
+  line-height: 1;
+}
+
+.case-study__block p {
+  font-size: var(--font-size-md);
+  line-height: 1.6;
+  color: var(--color-role);
+  margin: 0 0 var(--space-12);
+}
+
+.case-study__block a {
+  color: var(--color-link);
+  font-weight: 600;
+}
+
+.code-label {
+  font-size: var(--font-size-sm);
+  font-weight: 700;
+  color: var(--color-name);
+  margin: 0 0 var(--space-5);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.code-block {
+  background: var(--color-navy);
+  color: var(--color-light);
+  border-radius: var(--radius-lg);
+  padding: var(--space-12) var(--space-14);
+  margin: 0 0 var(--space-12);
+  overflow-x: auto;
+  font-family: var(--font-mono);
+  font-size: var(--font-size-sm);
+  line-height: 1.65;
+  -webkit-overflow-scrolling: touch;
+}
+
+.code-block code {
+  font-family: inherit;
+  white-space: pre;
+}
+
+/* Syntax highlighting */
+.code-block .tok-tag      { color: #f07178; }
+.code-block .tok-attr     { color: #ffcb6b; }
+.code-block .tok-str      { color: #c3e88d; }
+.code-block .tok-comment  { color: #6b7d8f; font-style: italic; }
+.code-block .tok-keyword  { color: #c792ea; }
+.code-block .tok-fn       { color: #82aaff; }
+.code-block .tok-punct    { color: #89ddff; }
+.code-block .tok-num      { color: #f78c6c; }
+
+/* ==========================================================================
+   Collapsible code blocks (native <details>/<summary>)
+   ========================================================================== */
+.code-details {
+  margin-bottom: var(--space-12);
+}
+
+.code-details > summary {
+  list-style: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin: 0 0 var(--space-5);
+  user-select: none;
+  transition: color var(--duration-fast) var(--ease-out);
+}
+
+.code-details > summary::-webkit-details-marker {
+  display: none;
+}
+
+.code-details > summary::before {
+  content: '\25B8';
+  font-size: var(--font-size-xs);
+  color: var(--color-link);
+  transition: transform var(--duration-fast) var(--ease-out);
+  display: inline-block;
+}
+
+.code-details[open] > summary::before {
+  transform: rotate(90deg);
+}
+
+.code-details > summary:hover {
+  color: var(--color-link);
+}
+
+.code-details .code-block {
+  margin-bottom: 0;
+}
+
+/* Problem bullet list */
+.problem-list {
+  margin: var(--space-4) 0 var(--space-12);
+  padding-left: var(--space-20);
+}
+
+.problem-list li {
+  font-size: var(--font-size-md);
+  line-height: 1.6;
+  color: var(--color-role);
+  margin-bottom: var(--space-4);
+}
+
+/* ==========================================================================
+   Portfolio — Problem demo video
+   ========================================================================== */
+.problem-demo {
+  margin: var(--space-12) 0;
+}
+
+.problem-demo__video {
+  width: 100%;
+  max-width: 720px;
+  border-radius: var(--radius-lg);
+  border: 1px solid rgba(223, 122, 115, 0.4);
+  box-shadow: var(--shadow-card);
+  display: block;
+}
+
+.problem-demo__caption {
+  font-size: var(--font-size-md);
+  line-height: 1.6;
+  color: var(--color-role);
+  margin: var(--space-10) 0 0;
+  max-width: 680px;
+}
+
+/* ==========================================================================
+   Portfolio — Improvements Grid
+   ========================================================================== */
+.improvements-section {
+  margin-bottom: var(--space-32);
+}
+
+.improvements-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: var(--space-12);
+}
+
+.improvement-card {
+  background: var(--color-white);
+  border: 1px solid var(--color-light);
+  border-radius: var(--radius-xl);
+  padding: var(--space-14) var(--space-12);
+  transition: box-shadow var(--duration-normal) var(--ease-out),
+              border-color var(--duration-normal) var(--ease-out),
+              transform var(--duration-normal) var(--ease-out);
+}
+
+.improvement-card:hover {
+  box-shadow: var(--shadow-card);
+  border-color: var(--color-pill-bg-active);
+  transform: translateY(-4px);
+}
+
+.improvement-card__icon {
+  font-size: var(--space-16);
+  margin-bottom: var(--space-7);
+}
+
+.improvement-card h3 {
+  font-size: var(--font-size-xl);
+  font-weight: 700;
+  color: var(--color-navy);
+  margin: 0 0 var(--space-5);
+}
+
+.improvement-card p {
+  font-size: var(--font-size-base);
+  line-height: 1.55;
+  color: var(--color-role);
+  margin: 0;
+}
+
+/* ==========================================================================
+   Portfolio — Demo Section
+   ========================================================================== */
+.demo-section {
+  margin-bottom: var(--space-24);
+}
+
+/* ==========================================================================
+   Portfolio — Footer
+   ========================================================================== */
+.portfolio-footer {
+  border-top: 1px solid var(--color-light);
+  padding: var(--space-16) 0;
+  text-align: center;
+}
+
+.portfolio-footer p {
+  font-size: var(--font-size-sm);
+  color: var(--color-role);
+  margin: 0;
+}
+
+.portfolio-footer a {
+  color: var(--color-red-light);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.portfolio-footer a:hover {
+  color: var(--color-red-light);
+  text-decoration: underline;
+}
+
+/* ==========================================================================
+   Portfolio — Responsive
+   ========================================================================== */
+@media (max-width: 860px) {
+  .hero { padding: var(--space-24) 0 var(--space-20); }
+  .hero__title { font-size: var(--font-size-7xl); }
+  .hero__subtitle { font-size: var(--font-size-md); }
+  .section-title { font-size: var(--font-size-5xl); }
+  .case-study__block { padding: var(--space-12) var(--space-10); }
+  .code-block { padding: var(--space-9) var(--space-8); font-size: var(--font-size-xs); }
+  .improvements-grid { grid-template-columns: 1fr; }
+  .portfolio-nav__links { gap: var(--space-9); }
+  .portfolio-nav__links a { font-size: var(--font-size-sm); }
+}
